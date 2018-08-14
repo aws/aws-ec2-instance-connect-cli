@@ -1,0 +1,9 @@
+[default]
+output = json
+region = us-east-2
+
+[profile newprofile]
+output = json
+region = us-west-2
+
+[profile empty]

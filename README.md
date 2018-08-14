@@ -1,7 +1,48 @@
-## AWS Ec2 Instance Connect CLI
+# AWS EC2 Instance Connect CLI
 
-This is an all-in-one client for EC2 Instance Connect that handles key brokerage and establishing connection to EC2 Instances through an interface near-identical to standard system ssh, sftp, and other utilities. 
+This is a Python client for accessing EC2 instances via AWS EC2 Instance Connect.
+This module supports Python 2.7.x and 3+.
 
-## License
+## Setup
 
-This library is licensed under the Apache 2.0 License. 
+It is strongly encouraged you set up a virtual environment for building and testing.
+
+### Prerequisites
+
+To set up this package you need to have pip installed.
+
+### Package Setup
+
+Install the package dependencies
+
+`pip install -r requirements.txt`
+
+## Running
+
+Ensure your PYTHONPATH includes the package top-level directory.
+
+Run the desired script with standard UNIX pathing.  For example,
+
+`./bin/mssh ec2-user@ec2-54-245-189-134.us-west-2.compute.amazonaws.com -pr dev -t i-0b01816d5c99826d8 -z us-west-2a`
+
+## Testing
+
+Unit tests can be run with standard pytest.  They may be run, for example, by
+
+`python -m pytest`
+
+## Generating Documentation
+
+Sphinx configuration has been included in this package.  To generate Sphinx documentation, run
+
+`pip install -r requirements-docs.txt`
+
+to pull dependencies.  Then, run
+
+`sphinx-apidoc -o doc/source ec2instanceconnectcli`
+
+to generate the module documentation reStructuredText files.  Finally, run
+
+`sphinx-build ./doc/source [desired output directory]`
+
+to generate the actual documentation html.

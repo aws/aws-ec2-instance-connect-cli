@@ -1,0 +1,5 @@
+setuptools>=3.3
+cryptography>=1.9
+botocore>=1.8.0
+pytest>=3.2.3
+pytest-cov>=2.5.1

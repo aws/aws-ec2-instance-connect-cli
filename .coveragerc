@@ -1,0 +1,7 @@
+[run]
+branch = true
+source = ec2instanceconnectcli
+
+[paths]
+source =
+    src/ec2instanceconnectcli
