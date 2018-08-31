@@ -5,14 +5,14 @@ class EC2InstanceConnectLogger(object):
     Common logger for all the EC2InstanceConnect components.
     """
 
-    def __init__(self, verbose=None):
+    def __init__(self, debug=False):
         """
-        :param verbose: Specifies if debug messages should be enabled
-        :type verbose: bool or None
+        :param debug: Specifies if debug messages should be enabled
+        :type debug: bool
         """
         self.logger = logging.getLogger('EC2InstanceConnect')
         log_level = logging.ERROR
-        if verbose:
+        if debug:
             log_level = logging.DEBUG
         self.logger.setLevel(log_level)
         ch = logging.StreamHandler()

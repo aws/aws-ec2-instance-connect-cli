@@ -1,3 +1,4 @@
+import logging
 import sys
 import time
 from subprocess import Popen
@@ -86,7 +87,11 @@ class EC2InstanceConnectCLI(object):
         """
         try:
             for bundle in self.instance_bundles:
-                bundle['session'] = self._get_botocore_session(profile_name=bundle['profile'], region=bundle['region'])
+                session = self._get_botocore_session(profile_name=bundle['profile'], region=bundle['region'])
+                # enable debug logging on botocore session if command line debug option is set
+                if self.logger.getEffectiveLevel() == logging.DEBUG:
+                    session.set_debug_logger()
+                bundle['session'] = session
 
             self.call_ec2()
             self.handle_keys()

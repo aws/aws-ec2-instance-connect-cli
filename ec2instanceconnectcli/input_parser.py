@@ -35,9 +35,9 @@ def parseargs(args, mode='ssh'):
     """
 
     if len(args) < 2:
-        raise AssertionError('No target was provided')
+        raise AssertionError('Missing target')
     if len(args[1]) < 1:
-        raise AssertionError('No target was provided')
+        raise AssertionError('Missing target')
 
     """
     Our flags.  As these are via argparse they're free.
@@ -61,8 +61,22 @@ def parseargs(args, mode='ssh'):
     # Process the instance & target data to give us an actual picture of what end hosts we're working with
     instance_bundles = _parse_instance_bundles(instance_bundles)
 
+    #validate instance_bundles
+    _validate_instance_bundles(instance_bundles, mode)
+
+    #validate instance_bundles
+    _validate_instance_bundles(instance_bundles, mode)
+
     return instance_bundles, flags, command
 
+def _validate_instance_bundles(instance_bundles, mode):
+    """
+    For supported modes ensure that instance_id exists.
+    """
+    for bundle in instance_bundles:
+        if mode in ['ssh', 'sftp']:
+            if not INSTANCE_ID_RE.match(bundle['instance_id']):
+                raise AssertionError('Missing instance_id')
 
 def _parse_command_flags(raw_command, instance_bundles, is_ssh=False):
     """
@@ -123,7 +137,7 @@ def _parse_command_flags(raw_command, instance_bundles, is_ssh=False):
 
     if used == len(raw_command) and len(raw_command) != 1:
         # EVERYTHING was a flag or flag value
-        raise AssertionError('No target was provided')
+        raise AssertionError('Missing target')
 
     # Target
     instance_bundles[0]['target'] = raw_command[command_index]
@@ -152,7 +166,7 @@ def _parse_instance_bundles(instance_bundles):
         if '@' in bundle['target']:
             if len(bundle['target'].split('@')) > 2:
                 # Host details includes an @.  Invalid.
-                raise AssertionError('Target DNS or IP address is invalid')
+                raise AssertionError('Invalid target')
             # A user was specified
             bundle['username'], bundle['target'] = bundle['target'].split('@')
         if ':' in bundle['target']:
@@ -185,13 +199,13 @@ def _parse_instance_bundles(instance_bundles):
 
         # Validate instance ID format
         if len(bundle['instance_id']) > 0 and not INSTANCE_ID_RE.match(bundle['instance_id'].lower()):
-            raise AssertionError('Instance ID {0} is not valid'.format(bundle['instance_id']))
+            raise AssertionError('Invalid instance_id')
 
         # Validate DNS/IP/hostname/etc
         if bundle.get('target', None):
             if not _is_valid_target(bundle.get('target', '')):
                 # It might be an IP
-                raise AssertionError('Target DNS or IP address is invalid')
+                raise AssertionError('Invalid target')
 
     return instance_bundles
 

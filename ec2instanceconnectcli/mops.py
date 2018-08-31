@@ -7,12 +7,8 @@ from ec2instanceconnectcli.EC2InstanceConnectCommand import EC2InstanceConnectCo
 from ec2instanceconnectcli.EC2InstanceConnectLogger import EC2InstanceConnectLogger
 from ec2instanceconnectcli import input_parser
 
-
-DEFAULT_USER = ''
 DEFAULT_INSTANCE = ''
-DEFAULT_PORT = 22
 DEFAULT_PROFILE = None
-
 
 def main(program, mode):
     """
@@ -25,28 +21,37 @@ def main(program, mode):
     :type mode: basestring
     """
 
-    parser = argparse.ArgumentParser(description="""Usage:
-    * mssh [user@]instance_id [-u profile] [-z availability_zone] [standard ssh flags] [command]
-    * mssh [user@]dns_name -t instance_id [-u profile] [-z availability_zone] [standard ssh flags] [command]
-    * msftp [user@]instance_id [-u aws_profile] [-z availability_zone] [standard sftp flags]
-    * msftp [user@]dns_name -t instance_id [-u aws_profile] [-z availability_zone] [standard sftp flags]
-    As standard for SFTP, the target may be followed by [:file ...] or [:dir[/]]
-    """)
-    parser.add_argument('-r', '--region', action='store', help='AWS region', type=str)
-    parser.add_argument('-z', '--zone', action='store', help='Availability zone', type=str)
-    parser.add_argument('-v', '--verbose', help='Enable logging', action="store_true")
+    usage = ""
+    if mode == "ssh":
+        usage="""
+            mssh [-t instance_id] [-u profile] [-z availability_zone] [-r region] [supported ssh flags] target [command]
 
-    parser.add_argument('-u', '--profile', action='store', help='AWS Config Profile', type=str, default=DEFAULT_PROFILE)
-    parser.add_argument('-t', '--instance_id', action='store', help='EC2 Instance ID.  Required if target is DNS name or IP address.', type=str, default=DEFAULT_INSTANCE)
+            target                => [user@]instance_id | [user@]hostname
+            [supported ssh flags] => [-l login_name] [-p port]
+        """
+    elif mode == "sftp":
+        usage="""
+            msftp [-u aws_profile] [-z availability_zone] [supported sftp flags] target
+            target                 => [user@]instance_id[:file ...][:dir[/]] | [user@]hostname[:file ...][:dir[/]]
+            [supported sftp flags] => [-P port] [-b batchfile]
+        """
 
+    parser = argparse.ArgumentParser(usage=usage)
+    parser.add_argument('-r', '--region', action='store', help='AWS region', type=str, metavar='')
+    parser.add_argument('-z', '--zone', action='store', help='Availability zone', type=str, metavar='')
+    parser.add_argument('-u', '--profile', action='store', help='AWS Config Profile', type=str, default=DEFAULT_PROFILE, metavar='')
+    parser.add_argument('-t', '--instance_id', action='store', help='EC2 Instance ID. Required if target is hostname', type=str, default=DEFAULT_INSTANCE, metavar='')
+    parser.add_argument('-d', '--debug', action="store_true", help='Turn on debug logging')
+
+    args = parser.parse_known_args()
+
+    logger = EC2InstanceConnectLogger(args[0].debug)
     try:
-        args = parser.parse_known_args()
-    except:
+        instance_bundles, flags, program_command = input_parser.parseargs(args, mode)
+    except Exception as e:
+        print(str(e))
         parser.print_help()
         sys.exit(1)
-
-    logger = EC2InstanceConnectLogger(args[0].verbose)
-    instance_bundles, flags, program_command = input_parser.parseargs(args, mode)
 
     #Generate temp key
     cli_key = EC2InstanceConnectKey(logger.get_logger())
