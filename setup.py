@@ -22,7 +22,7 @@ def find_version(*file_paths):
 
 
 requires = ['cryptography>=1.9',
-            'botocore>=1.8.0'
+            'botocore>=1.12.179'
             ]
 
 setup_options = dict(
