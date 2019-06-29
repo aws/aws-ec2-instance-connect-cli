@@ -1,7 +1,7 @@
 # AWS EC2 Instance Connect CLI
 
 This is a Python client for accessing EC2 instances via AWS EC2 Instance Connect.
-This module supports Python 2.7.x and 3+.
+This module supports Python 2.7.x and 3+.  [This package is available on PyPI for pip installation](https://pypi.org/project/ec2instanceconnectcli/), ie, `pip install ec2instanceconnectcli`
 
 ## Setup
 
