@@ -46,7 +46,6 @@ def parseargs(args, mode='ssh'):
     :return: Args split into three pieces: EC2 instance information, command flags, and and the actual command to run
     :rtype: tuple
     """
-
     if len(args) < 2:
         raise AssertionError('Missing target')
     if len(args[1]) < 1:
@@ -60,6 +59,7 @@ def parseargs(args, mode='ssh'):
     """
     instance_bundles = [
         {
+            'ssm': args[0].ssm_connect,
             'profile': args[0].profile,
             'instance_id': args[0].instance_id,
             'region': args[0].region,
@@ -124,7 +124,6 @@ def _parse_command_flags(raw_command, instance_bundles, is_ssh=False):
 
         # This is either a flag or a flag value
         flags = '{0} {1}'.format(flags, raw_command[command_index])
-
         if raw_command[command_index][0] == '-':
             # Flag
             is_flagged = True
@@ -143,7 +142,6 @@ def _parse_command_flags(raw_command, instance_bundles, is_ssh=False):
         command_index += 1
 
     flags = flags.strip()
-
     """
     Target host and command or file list
     """

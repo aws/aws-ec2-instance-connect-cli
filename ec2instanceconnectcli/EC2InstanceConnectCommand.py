@@ -75,6 +75,8 @@ class EC2InstanceConnectCommand(object):
         target = ''
         if instance_bundle.get('host_info', None):
             target = "{0}@{1}".format(instance_bundle['username'], instance_bundle['host_info'])
+        if instance_bundle.get('ssm', False):
+            target = "{0}@{1}".format(instance_bundle['username'], instance_bundle['instance_id'])
         # file will exist only for SFTP and SCP operations.
         if instance_bundle.get('file', None):
             target = "{0}:{1}".format(target, instance_bundle['file']).lstrip(':')
