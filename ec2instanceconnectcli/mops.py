@@ -37,7 +37,7 @@ def main(program, mode):
     usage = ""
     if mode == "ssh":
         usage="""
-            mssh [-t instance_id] [-u profile] [-z availability_zone] [-r region] [supported ssh flags] target [command]
+            mssh [-t instance_id] [-u profile] [-z availability_zone] [-r region] [-ssm] [supported ssh flags] target [command]
 
             target                => [user@]instance_id | [user@]hostname
             [supported ssh flags] => [-l login_name] [-p port]
