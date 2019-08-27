@@ -121,10 +121,10 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_file = 'identity'
         flag = '-f flag'
         command = 'command arg'
-        host = '0.0.0.0'
+        host = self.instance_id
         logger = EC2InstanceConnectLogger()
         instance_bundles = [{'username': self.default_user, 'instance_id': self.instance_id,
-                                     'target': host, 'zone': self.availability_zone, 'region': self.region,
+                                     'target': host, 'zone': self.availability_zone, 'region': self.region, 'ssm': True,
                                      'profile': self.profile}]
 
         mock_instance_data.return_value = self.instance_info
