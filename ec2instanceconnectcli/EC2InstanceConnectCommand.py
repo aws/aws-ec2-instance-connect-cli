@@ -16,7 +16,7 @@ class EC2InstanceConnectCommand(object):
     Generates commands relevant for the client.
     """
 
-    def __init__(self, program, instance_bundles, key_file, flags, program_command, logger):
+    def __init__(self, program, instance_bundles, key_file, ssh_config, flags, program_command, logger):
         """
         Utility class to generate program specific command.
 
@@ -35,6 +35,7 @@ class EC2InstanceConnectCommand(object):
         self.program = program
         self.instance_bundles = instance_bundles
         self.key_file = key_file
+        self.ssh_config = ssh_config
         self.flags = flags
         self.program_command = program_command
 
@@ -45,6 +46,9 @@ class EC2InstanceConnectCommand(object):
         # Start with protocol & identity file
         command = "{0} -i {1}".format(self.program, self.key_file)
 
+        # Add ssh_config if using ssm
+        if self.ssh_config is not None:
+            command = "{0} -F {1}".format(command, self.ssh_config)
         # Next add command flags if present
         if len(self.flags) > 0:
             command = "{0} {1}".format(command, self.flags)

@@ -15,6 +15,7 @@ import sys
 import argparse
 
 from ec2instanceconnectcli.EC2InstanceConnectCLI import EC2InstanceConnectCLI
+from ec2instanceconnectcli.EC2InstanceConnectSSHConfig import EC2InstanceConnectSSHConfig
 from ec2instanceconnectcli.EC2InstanceConnectKey import EC2InstanceConnectKey
 from ec2instanceconnectcli.EC2InstanceConnectCommand import EC2InstanceConnectCommand
 from ec2instanceconnectcli.EC2InstanceConnectLogger import EC2InstanceConnectLogger
@@ -67,9 +68,11 @@ def main(program, mode):
         parser.print_help()
         sys.exit(1)
 
+    #Generate temporary ssh config
+    ssh_config = EC2InstanceConnectSSHConfig(instance_bundles, logger.get_logger())
     #Generate temp key
     cli_key = EC2InstanceConnectKey(logger.get_logger())
-    cli_command = EC2InstanceConnectCommand(program, instance_bundles, cli_key.get_priv_key_file(), flags, program_command, logger.get_logger())
+    cli_command = EC2InstanceConnectCommand(program, instance_bundles, cli_key.get_priv_key_file(), ssh_config.get_config_file(), flags, program_command, logger.get_logger())
 
     try:
         # TODO: Handling for if the '-i' flag is passed
