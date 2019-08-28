@@ -27,7 +27,15 @@ class EC2InstanceConnectSSHConfig(object):
     """
     self.logger = logger
     self.instance_bundles = instance_bundles
+    self.region = self.get_region()
     self.tempf = self.write_config()
+
+  def get_region(self):
+    region = None
+    for bundle in self.instance_bundles:
+      region = bundle['region']
+
+    return region
 
   def add_instance_name(self):
     """
@@ -36,14 +44,22 @@ class EC2InstanceConnectSSHConfig(object):
     config = "host {0}\n".format(self.instance_bundles[0]['instance_id'])
     return config
 
-  def add_ssm_proxy_command(self, config):
+  def add_ssm_proxy_command(self, config, region=None):
     """
     Add ProxyCommand to ssh config
 
     :param config: Initial config string
     :type config: basestring
+    :param region: Region string
+    :type region: basestring
     """
-    proxy_command = "ProxyCommand sh -c \"aws ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\""
+
+    region_cli = ''
+    
+    if region is not None:
+      region_cli = "--region {0}".format(region)
+
+    proxy_command = "ProxyCommand sh -c \"aws {0} ssm start-session --target %h --document-name AWS-StartSSHSession --parameters 'portNumber=%p'\"".format(region_cli)
     return "{0} {1}".format(config, proxy_command)
 
   def write_config(self):
@@ -52,7 +68,7 @@ class EC2InstanceConnectSSHConfig(object):
     """
     config = self.add_instance_name()
     if self.instance_bundles[0]['ssm']:
-      config = self.add_ssm_proxy_command(config)
+      config = self.add_ssm_proxy_command(config, self.region)
     tempf = tempfile.NamedTemporaryFile(delete=False)
     with open(tempf.name, 'w') as f:
       f.write(config)
