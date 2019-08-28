@@ -15,6 +15,7 @@ import sys
 import argparse
 
 from ec2instanceconnectcli.EC2InstanceConnectCLI import EC2InstanceConnectCLI
+from ec2instanceconnectcli.EC2InstanceConnectSSHConfig import EC2InstanceConnectSSHConfig
 from ec2instanceconnectcli.EC2InstanceConnectKey import EC2InstanceConnectKey
 from ec2instanceconnectcli.EC2InstanceConnectCommand import EC2InstanceConnectCommand
 from ec2instanceconnectcli.EC2InstanceConnectLogger import EC2InstanceConnectLogger
@@ -37,7 +38,7 @@ def main(program, mode):
     usage = ""
     if mode == "ssh":
         usage="""
-            mssh [-t instance_id] [-u profile] [-z availability_zone] [-r region] [supported ssh flags] target [command]
+            mssh [-t instance_id] [-u profile] [-z availability_zone] [-r region] [-ssm] [supported ssh flags] target [command]
 
             target                => [user@]instance_id | [user@]hostname
             [supported ssh flags] => [-l login_name] [-p port]
@@ -54,6 +55,7 @@ def main(program, mode):
     parser.add_argument('-z', '--zone', action='store', help='Availability zone', type=str, metavar='')
     parser.add_argument('-u', '--profile', action='store', help='AWS Config Profile', type=str, default=DEFAULT_PROFILE, metavar='')
     parser.add_argument('-t', '--instance_id', action='store', help='EC2 Instance ID. Required if target is hostname', type=str, default=DEFAULT_INSTANCE, metavar='')
+    parser.add_argument('-ssm', '--ssm_connect', action='store_true', help='Connect to EC2 Instance ID through SSM')
     parser.add_argument('-d', '--debug', action="store_true", help='Turn on debug logging')
 
     args = parser.parse_known_args()
@@ -66,9 +68,11 @@ def main(program, mode):
         parser.print_help()
         sys.exit(1)
 
+    #Generate temporary ssh config
+    ssh_config = EC2InstanceConnectSSHConfig(instance_bundles, logger.get_logger())
     #Generate temp key
     cli_key = EC2InstanceConnectKey(logger.get_logger())
-    cli_command = EC2InstanceConnectCommand(program, instance_bundles, cli_key.get_priv_key_file(), flags, program_command, logger.get_logger())
+    cli_command = EC2InstanceConnectCommand(program, instance_bundles, cli_key.get_priv_key_file(), ssh_config.get_config_file(), flags, program_command, logger.get_logger())
 
     try:
         # TODO: Handling for if the '-i' flag is passed

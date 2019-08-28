@@ -33,6 +33,7 @@ class TestInputParser(TestBase):
     parser.add_argument('-T', '--dest_instance_id', action='store', type=str, default='',
                         help='EC2 Instance ID. Required if destination is a second instance and is given as a DNS name'
                              'or IP address')
+    parser.add_argument('-ssm', '--ssm_connect', action='store_true', help='Connect to instance with instance id through SSM')
 
     def test_basic_target(self):
         args = self.parser.parse_known_args(['-u', self.profile, self.instance_id])
@@ -40,7 +41,17 @@ class TestInputParser(TestBase):
         bundles, flags, command = input_parser.parseargs(args)
 
         self.assertEqual(bundles, [{'username': self.default_user, 'instance_id': self.instance_id,
-                                   'target': None, 'zone': None, 'region': None, 'profile': self.profile}])
+                                   'target': None, 'zone': None, 'region': None, 'ssm': False, 'profile': self.profile}])
+        self.assertEqual(flags, '')
+        self.assertEqual(command, '')
+
+    def test_ssm_target(self):
+        args = self.parser.parse_known_args(['-u', self.profile, '-ssm', self.instance_id])
+
+        bundles, flags, command = input_parser.parseargs(args)
+
+        self.assertEqual(bundles, [{'username': self.default_user, 'instance_id': self.instance_id,
+                                   'target': None, 'zone': None, 'region': None, 'ssm': True, 'profile': self.profile}])
         self.assertEqual(flags, '')
         self.assertEqual(command, '')
 
@@ -50,7 +61,7 @@ class TestInputParser(TestBase):
         bundles, flags, command = input_parser.parseargs(args)
 
         self.assertEqual(bundles, [{'username': 'myuser', 'instance_id': self.instance_id,
-                                    'target': None, 'zone': None, 'region': None, 'profile': self.profile}])
+                                    'target': None, 'zone': None, 'region': None, 'ssm': False, 'profile': self.profile}])
         self.assertEqual(flags, '')
         self.assertEqual(command, '')
 
@@ -62,7 +73,7 @@ class TestInputParser(TestBase):
 
         self.assertEqual(bundles, [{'username': self.default_user, 'instance_id': self.instance_id,
                                     'target': self.dns_name, 'zone': self.availability_zone,
-                                    'region': self.region, 'profile': self.profile}])
+                                    'region': self.region, 'ssm': False, 'profile': self.profile}])
         self.assertEqual(flags, '')
         self.assertEqual(command, '')
 
@@ -72,7 +83,7 @@ class TestInputParser(TestBase):
         bundles, flags, command = input_parser.parseargs(args)
 
         self.assertEqual(bundles, [{'username': 'login', 'instance_id': self.instance_id,
-                                    'target': None, 'zone': None, 'region': None, 'profile': self.profile}])
+                                    'target': None, 'zone': None, 'region': None, 'ssm': False, 'profile': self.profile}])
         self.assertEqual(flags, '-1 -l login')
         self.assertEqual(command, '')
 
@@ -82,7 +93,7 @@ class TestInputParser(TestBase):
         bundles, flags, command = input_parser.parseargs(args)
 
         self.assertEqual(bundles, [{'username': self.default_user, 'instance_id': self.instance_id,
-                                    'target': None, 'zone': None, 'region': None, 'profile': self.profile}])
+                                    'target': None, 'zone': None, 'region': None, 'ssm': False, 'profile': self.profile}])
         self.assertEqual(flags, '')
         self.assertEqual(command, 'uname -a')
 
@@ -93,7 +104,7 @@ class TestInputParser(TestBase):
         bundles, flags, command = input_parser.parseargs(args, 'sftp')
 
         self.assertEqual(bundles, [{'username': self.default_user, 'instance_id': self.instance_id,
-                                    'target': None, 'zone': None, 'region': None, 'profile': self.profile,
+                                    'target': None, 'zone': None, 'region': None, 'ssm': False, 'profile': self.profile,
                                     'file': 'first_file'}])
         self.assertEqual(flags, '')
         self.assertEqual(command, 'second_file')

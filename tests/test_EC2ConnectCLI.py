@@ -27,6 +27,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                   mock_push_key,
                   mock_run):
         mock_file = 'identity'
+        ssh_config =  'ssh_config'
         flag = '-f flag'
         command = 'command arg'
         logger = EC2InstanceConnectLogger()
@@ -37,11 +38,11 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.instance_info
         mock_push_key.return_value = None
 
-        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, ssh_config, flag, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
         
-        expected_command = "ssh -i {0} {1} {2}@{3} {4}".format(mock_file, flag, self.default_user,
+        expected_command = "ssh -i {0} -F {1} {2} {3}@{4} {5}".format(mock_file, ssh_config, flag, self.default_user,
                                                                self.public_ip, command)
 
         # Check that we successfully get to the run
@@ -59,6 +60,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                   mock_run):
         mock_file = "identity"
         flag = '-f flag'
+        ssh_config = 'ssh_config'
         command = 'command arg'
         logger = EC2InstanceConnectLogger()
         instance_bundles = [{'username': self.default_user, 'instance_id': self.instance_id,
@@ -68,11 +70,11 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.private_instance_info
         mock_push_key.return_value = None
 
-        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, ssh_config, flag, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
 
-        expected_command = "ssh -i {0} {1} {2}@{3} {4}".format(mock_file, flag, self.default_user,
+        expected_command = "ssh -i {0} -F {1} {2} {3}@{4} {5}".format(mock_file, ssh_config, flag, self.default_user,
                                                                self.private_ip, command)
 
         # Check that we successfully get to the run
@@ -88,6 +90,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                   mock_push_key,
                   mock_run):
         mock_file = 'identity'
+        ssh_config = 'ssh_config'
         flag = '-f flag'
         command = 'command arg'
         host = '0.0.0.0'
@@ -99,11 +102,43 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.instance_info
         mock_push_key.return_value = None
 
-        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, ssh_config, flag, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
 
-        expected_command = "ssh -i {0} {1} {2}@{3} {4}".format(mock_file, flag, self.default_user,
+        expected_command = "ssh -i {0} -F {1} {2} {3}@{4} {5}".format(mock_file, ssh_config, flag, self.default_user,
+                                                               host, command)
+        # Check that we successfully get to the run
+        # Since both target and availability_zone are provided, mock_instance_data should not be called
+        self.assertFalse(mock_instance_data.called)
+        self.assertTrue(mock_push_key.called)
+        mock_run.assert_called_with(expected_command)
+
+    @mock.patch('ec2instanceconnectcli.EC2InstanceConnectCLI.EC2InstanceConnectCLI.run_command')
+    @mock.patch('ec2instanceconnectcli.key_publisher.push_public_key')
+    @mock.patch('ec2instanceconnectcli.ec2_util.get_instance_data')
+    def test_mssh_with_ssm_target(self,
+                  mock_instance_data,
+                  mock_push_key,
+                  mock_run):
+        mock_file = 'identity'
+        ssh_config = 'ssh_config'
+        flag = '-f flag'
+        command = 'command arg'
+        host = self.instance_id
+        logger = EC2InstanceConnectLogger()
+        instance_bundles = [{'username': self.default_user, 'instance_id': self.instance_id,
+                                     'target': host, 'zone': self.availability_zone, 'region': self.region, 'ssm': True,
+                                     'profile': self.profile}]
+
+        mock_instance_data.return_value = self.instance_info
+        mock_push_key.return_value = None
+
+        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, ssh_config, flag, command, logger.get_logger())
+        cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
+        cli.invoke_command()
+
+        expected_command = "ssh -i {0} -F {1} {2} {3}@{4} {5}".format(mock_file, ssh_config, flag, self.default_user,
                                                                host, command)
         # Check that we successfully get to the run
         # Since both target and availability_zone are provided, mock_instance_data should not be called
@@ -119,6 +154,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                   mock_push_key,
                   mock_run):
         mock_file = 'identity'
+        ssh_config = 'ssh_config'
         flag = '-f flag'
         command = 'file2 file3'
         logger = EC2InstanceConnectLogger()
@@ -129,10 +165,11 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.instance_info
         mock_push_key.return_value = None
 
-        expected_command = "sftp -i {0} {1} {2}@{3}:{4} {5}".format(mock_file, flag, self.default_user,
+        expected_command = "sftp -i {0} -F {1} {2} {3}@{4}:{5} {6}".format(mock_file, ssh_config, flag, self.default_user,
                                                                self.public_ip, 'file1', command)
 
-        cli_command = EC2InstanceConnectCommand("sftp", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("sftp", instance_bundles, mock_file, ssh_config, 
+        flag, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
 
@@ -150,6 +187,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                    mock_run):
         mock_file = 'identity'
         flag = '-f flag'
+        ssh_config = 'ssh_config'
         command = 'file2 file3'
         logger = EC2InstanceConnectLogger()
         instance_bundles = [{'username': self.default_user, 'instance_id': self.instance_id,
@@ -162,12 +200,12 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.instance_info
         mock_push_key.return_value = None
 
-        expected_command = "scp -i {0} {1} {2}@{3}:{4} {5} {6}@{7}:{8}".format(mock_file, flag, self.default_user,
+        expected_command = "scp -i {0} -F {1} {2} {3}@{4}:{5} {6} {7}@{8}:{9}".format(mock_file, ssh_config, flag, self.default_user,
                                                                                 self.public_ip, 'file1', command,
                                                                                 self.default_user,
                                                                                 self.public_ip, 'file4')
 
-        cli_command = EC2InstanceConnectCommand("scp", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("scp", instance_bundles, mock_file, ssh_config, flag, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
 
