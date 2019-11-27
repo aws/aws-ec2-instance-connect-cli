@@ -175,3 +175,36 @@ class TestEC2InstanceConnectCLI(TestBase):
         self.assertTrue(mock_instance_data.called)
         self.assertTrue(mock_push_key.called)
         mock_run.assert_called_with(expected_command)
+
+    @mock.patch('ec2instanceconnectcli.EC2InstanceConnectCLI.EC2InstanceConnectCLI.run_command')
+    @mock.patch('ec2instanceconnectcli.key_publisher.push_public_key')
+    @mock.patch('ec2instanceconnectcli.ec2_util.get_instance_data')
+    def test_jumphost(self,
+                   mock_instance_data,
+                   mock_push_key,
+                   mock_run):
+        mock_file = 'identity'
+        flag = ''
+        command = ''
+        logger = EC2InstanceConnectLogger()
+        instance_bundles = [{'username': 'user1', 'instance_id': 'i-afafafafafafafafaf',
+                                     'target': None, 'zone': self.availability_zone, 'region': self.region,
+                                     'profile': self.profile},
+                                    {'username': 'user2', 'instance_id': 'i-acacacacacacacacac',
+                                     'target': None, 'zone': self.availability_zone, 'region': self.region,
+                                     'profile': self.profile}]
+
+        mock_instance_data.return_value = self.instance_info
+        mock_push_key.return_value = None
+        expected_command = "ssh -i {0} {1}@{2} -o \"ProxyCommand=ssh -i {0} -W '[%h]:%p' {3}@{4}\"".format(mock_file,
+                                                                                                          'user1', self.public_ip,
+                                                                                                          'user2', self.public_ip)
+
+        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
+        cli.invoke_command()
+
+        # Check that we successfully get to the run
+        self.assertTrue(mock_instance_data.called)
+        self.assertTrue(mock_push_key.called)
+        mock_run.assert_called_with(expected_command)

@@ -22,6 +22,7 @@ class TestInputParser(TestBase):
     parser = argparse.ArgumentParser(description='alternate usage: mssh [user]@[instance-id]:[port]')
     parser.add_argument('-u', '--profile', help='AWS Config Profile', type=str, default='default')
     parser.add_argument('-t', '--instance_id', help='EC2 Instance ID', type=str, default='')
+    parser.add_argument('-J', '--jumphost', action='store', help='EC2 Jump host Instance ID.', type=str, default='')
     parser.add_argument('-r', '--region', action='store', help='AWS region', type=str)
     parser.add_argument('-z', '--zone', action='store', help='Availability zone', type=str)
     parser.add_argument('-U', '--dest_profile', action='store',
@@ -132,3 +133,14 @@ class TestInputParser(TestBase):
                                              '-z', 'bad zone', self.dns_name])
 
         self.assertRaises(AssertionError, input_parser.parseargs, args)
+
+    def test_jumphost(self):
+        args = self.parser.parse_known_args(['-J', 'user2@i-ascacacsacacaascas', "user1@{0}".format('i-afafafafafafafafaf')])
+        bundles, flags, command = input_parser.parseargs(args, 'ssh')
+        print(bundles)
+        self.assertEqual(bundles, [
+            {'username': 'user1', 'instance_id': 'i-afafafafafafafafaf',
+            'target': None, 'zone': None, 'region': None, 'profile': 'default'},
+            {'username': 'user2', 'instance_id': 'i-ascacacsacacaascas',
+            'target': None, 'zone': None, 'region': None, 'profile': 'default'}
+        ])
