@@ -58,6 +58,10 @@ Connect to an instance by DNS name as user "my-user" and run the command "ls"
 
     $ mssh my-user@ec2-[ec2 IP].us-east-1.compute.amazonaws.com -t [instance id] ls
 
+Connect to an instance via jump host
+
+    $ mssh -J my-user@[jump host id] user@[instance id]
+
 Run sftp against instance using the AWS CLI profile "beta" and transferring my-file
 
     $ msftp -pr beta [instance id]:my-file

@@ -68,6 +68,16 @@ def parseargs(args, mode='ssh'):
     ]
     # We do this as an array to support future commands that may need multiple instances (eg, scp)
 
+    if args[0].jumphost:
+        instance_bundles.append(
+            {
+                'profile': args[0].profile,
+                'region': args[0].region,
+                'zone': args[0].zone,
+                'target': args[0].jumphost
+            }
+        )
+
     # Process out the command flags & target data
     flags, command, instance_bundles = _parse_command_flags(args[1], instance_bundles, is_ssh=(mode=='ssh'))
 

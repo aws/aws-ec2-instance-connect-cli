@@ -56,7 +56,9 @@ class EC2InstanceConnectCommand(object):
         if len(self.program_command) > 0:
             command = "{0} {1}".format(command, self.program_command)
 
-        if len(self.instance_bundles) > 1:
+        if len(self.instance_bundles) > 1 and self.program == 'ssh':
+            command = "{0} -o \"ProxyCommand=ssh -i {1} -W '[%h]:%p' {2}\"".format(command, self.key_file, self._get_target(self.instance_bundles[1]))
+        elif len(self.instance_bundles) > 1:
             command = "{0} {1}".format(command, self._get_target(self.instance_bundles[1]))
 
         self.logger.debug('Generated command: {0}'.format(command))

@@ -54,6 +54,7 @@ def main(program, mode):
     parser.add_argument('-z', '--zone', action='store', help='Availability zone', type=str, metavar='')
     parser.add_argument('-u', '--profile', action='store', help='AWS Config Profile', type=str, default=DEFAULT_PROFILE, metavar='')
     parser.add_argument('-t', '--instance_id', action='store', help='EC2 Instance ID. Required if target is hostname', type=str, default=DEFAULT_INSTANCE, metavar='')
+    parser.add_argument('-J', '--jumphost', action='store', help='EC2 Jump host Instance ID.', type=str, default=DEFAULT_INSTANCE, metavar='')
     parser.add_argument('-d', '--debug', action="store_true", help='Turn on debug logging')
 
     args = parser.parse_known_args()
