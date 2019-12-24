@@ -36,7 +36,7 @@ from ec2instanceconnectcli import mops
 import sys
 
 def main():
-    return msftp.main("sftp", "sftp")
+    return mops.main("sftp", "sftp")
 
 if __name__ == '__main__':
     sys.exit(main())
