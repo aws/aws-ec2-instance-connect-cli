@@ -66,7 +66,8 @@ class EC2InstanceConnectCLI(object):
             bundle['zone'] = instance_info.availability_zone
             #If host_info is not available, fallback to using public ipaddress and then private ipaddress.
             if not bundle['host_info']:
-                bundle['host_info'] = instance_info.public_ip if instance_info.public_ip else instance_info.private_ip
+                use_public_ip = instance_info.public_ip and not bundle.get('private')
+                bundle['host_info'] = instance_info.public_ip if use_public_ip else instance_info.private_ip
             self.logger.debug('Successfully got instance information from EC2 API for {0}'.format(bundle['instance_id']))
 
     def handle_keys(self):
