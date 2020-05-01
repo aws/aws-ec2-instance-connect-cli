@@ -31,6 +31,8 @@ Unit tests can be run with standard pytest.  They may be run, for example, by
 
 `python -m pytest`
 
+For Python2, ensure **mock** is installed: `pip2 install mock`.
+
 ## Generating Documentation
 
 Sphinx configuration has been included in this package.  To generate Sphinx documentation, run

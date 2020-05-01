@@ -32,6 +32,8 @@ def main(program, mode):
     :type program: basestring
     :param mode: Identifies either SSH/SFTP operation.
     :type mode: basestring
+    :return: Return code for remote command
+    :rtype: int
     """
 
     usage = ""
@@ -73,7 +75,7 @@ def main(program, mode):
     try:
         # TODO: Handling for if the '-i' flag is passed
         cli = EC2InstanceConnectCLI(instance_bundles, cli_key.get_pub_key(), cli_command, logger.get_logger())
-        cli.invoke_command()
+        return cli.invoke_command()
     except Exception as e:
         print('Failed with:\n' + str(e))
         sys.exit(1)

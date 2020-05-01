@@ -31,6 +31,8 @@ def main(program, mode):
     :type program: basestring
     :param mode: Identifies either SSH/SFTP operation.
     :type mode: basestring
+    :return: Return code for remote command
+    :rtype: int
     """
 
     usage = ""
@@ -94,7 +96,7 @@ def main(program, mode):
 
     try:
         mssh = EC2InstanceConnectCLI(instance_bundles, pub_key, cli_command, logger.get_logger())
-        mssh.invoke_command()
+        return mssh.invoke_command()
     except Exception as e:
         print("Failed with:\n" + str(e))
         sys.exit(1)

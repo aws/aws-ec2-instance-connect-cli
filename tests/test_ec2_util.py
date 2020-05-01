@@ -11,9 +11,12 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 
-from unittest import mock
 from testloader.test_base import TestBase
 from ec2instanceconnectcli import ec2_util
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 
 class TestEC2Util(TestBase):

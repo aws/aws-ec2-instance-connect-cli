@@ -86,6 +86,8 @@ class EC2InstanceConnectCLI(object):
         Runs the given command in a sub-shell
         :param command: Command to invoke
         :type command: basestring
+        :return: Return code for remote command
+        :rtype: int
         """
         if not command:
             raise ValueError('Must provide a command')
@@ -93,10 +95,13 @@ class EC2InstanceConnectCLI(object):
         invocation_proc = Popen(command, shell=True)
         while invocation_proc.poll() is None: #sub-process not terminated
             time.sleep(0.1)
+        return invocation_proc.returncode
 
     def invoke_command(self):
         """
         Generates the appropriate shell command and invokes it
+        :return: Return code for remote command
+        :rtype: int
         """
         try:
             for bundle in self.instance_bundles:
@@ -110,7 +115,7 @@ class EC2InstanceConnectCLI(object):
             self.handle_keys()
 
             #important to generate the command after calling call_ec2 and handle_keys
-            self.run_command(self.cli_command.get_command())
+            return self.run_command(self.cli_command.get_command())
 
         except Exception as e:
             self.logger.error("Failed with: " + str(e))

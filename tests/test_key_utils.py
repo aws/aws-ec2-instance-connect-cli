@@ -14,7 +14,11 @@
 from cryptography.hazmat.backends import default_backend as crypto_default_backend
 from cryptography.hazmat.primitives import serialization as crypto_serialization
 from ec2instanceconnectcli import key_utils
-from unittest import mock, TestCase
+from unittest import TestCase
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
 
 class TestKeyUtils(TestCase):

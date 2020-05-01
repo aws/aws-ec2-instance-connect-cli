@@ -15,7 +15,11 @@ from ec2instanceconnectcli.EC2InstanceConnectCLI import EC2InstanceConnectCLI
 from ec2instanceconnectcli.EC2InstanceConnectCommand import EC2InstanceConnectCommand
 from ec2instanceconnectcli.EC2InstanceConnectLogger import EC2InstanceConnectLogger
 from testloader.test_base import TestBase
-from unittest import mock
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
 
 class TestEC2InstanceConnectCLI(TestBase):
 
@@ -175,3 +179,9 @@ class TestEC2InstanceConnectCLI(TestBase):
         self.assertTrue(mock_instance_data.called)
         self.assertTrue(mock_push_key.called)
         mock_run.assert_called_with(expected_command)
+
+    def test_status_code(self):
+        #TODO: Refine test for checking run_command status code
+        cli = EC2InstanceConnectCLI(None, None, None, None)
+        code = cli.run_command("echo ok; exit -1;")
+        self.assertEquals(code, 255)
