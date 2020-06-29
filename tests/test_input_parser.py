@@ -132,3 +132,8 @@ class TestInputParser(TestBase):
                                              '-z', 'bad zone', self.dns_name])
 
         self.assertRaises(AssertionError, input_parser.parseargs, args)
+
+    def test_contains_identity_file(self):
+        args = self.parser.parse_known_args(['-u', self.profile, "-1", "-l", "login", "  -i ", self.instance_id])
+
+        self.assertRaises(AssertionError, input_parser.parseargs, args)

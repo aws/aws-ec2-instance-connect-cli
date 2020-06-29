@@ -49,8 +49,9 @@ def parseargs(args, mode='ssh'):
 
     if len(args) < 2:
         raise AssertionError('Missing target')
-    if len(args[1]) < 1:
-        raise AssertionError('Missing target')
+
+    custom_flags = args[1]
+    _validate_custom_flags(custom_flags)
 
     """
     Our flags.  As these are via argparse they're free.
@@ -69,7 +70,7 @@ def parseargs(args, mode='ssh'):
     # We do this as an array to support future commands that may need multiple instances (eg, scp)
 
     # Process out the command flags & target data
-    flags, command, instance_bundles = _parse_command_flags(args[1], instance_bundles, is_ssh=(mode=='ssh'))
+    flags, command, instance_bundles = _parse_command_flags(custom_flags, instance_bundles, is_ssh=(mode=='ssh'))
 
     # Process the instance & target data to give us an actual picture of what end hosts we're working with
     instance_bundles = _parse_instance_bundles(instance_bundles)
@@ -77,10 +78,15 @@ def parseargs(args, mode='ssh'):
     #validate instance_bundles
     _validate_instance_bundles(instance_bundles, mode)
 
-    #validate instance_bundles
-    _validate_instance_bundles(instance_bundles, mode)
-
     return instance_bundles, flags, command
+
+def _validate_custom_flags(flags):
+    if len(flags) < 1:
+        raise AssertionError('Missing target')
+    for flag in flags:
+        flag = flag.strip()
+        if flag == '-i':
+            raise AssertionError("Should not use '-i' switch as we will handle identity file")
 
 def _validate_instance_bundles(instance_bundles, mode):
     """
@@ -106,7 +112,6 @@ def _parse_command_flags(raw_command, instance_bundles, is_ssh=False):
     :return: tuple of flags and final comamnd or file list
     :rtype: tuple
     """
-    # TODO: We do not currently handle the user passing the '-i' flag.
     flags = ''
     is_user = False
     is_flagged = False

@@ -73,7 +73,6 @@ def main(program, mode):
     cli_command = EC2InstanceConnectCommand(program, instance_bundles, cli_key.get_priv_key_file(), flags, program_command, logger.get_logger())
 
     try:
-        # TODO: Handling for if the '-i' flag is passed
         cli = EC2InstanceConnectCLI(instance_bundles, cli_key.get_pub_key(), cli_command, logger.get_logger())
         return cli.invoke_command()
     except Exception as e:
