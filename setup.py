@@ -32,7 +32,7 @@ setup_options = dict(
     long_description='This CLI package handles publishing keys through EC2 Instance Connect'
                      'and using them to connect to EC2 instances.',
     author='Amazon Web Services',
-    url='http://aws.amazon.com/cli',  # TODO: This product does not yet have a dedicated documentation URL
+    url='https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect.html',
     scripts=['bin/mssh', 'bin/msftp', 'bin/mssh.cmd', 'bin/msftp.cmd',
         'bin/mssh-putty.cmd', 'bin/msftp-putty.cmd'],
     packages=find_packages(exclude=['test']),
@@ -57,6 +57,7 @@ setup_options = dict(
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: Internet :: File Transfer Protocol (FTP)',
         'Topic :: System :: Systems Administration :: Authentication/Directory'
     )
