@@ -184,4 +184,4 @@ class TestEC2InstanceConnectCLI(TestBase):
         #TODO: Refine test for checking run_command status code
         cli = EC2InstanceConnectCLI(None, None, None, None)
         code = cli.run_command("echo ok; exit -1;")
-        self.assertEquals(code, 255)
+        self.assertEqual(code, 255)

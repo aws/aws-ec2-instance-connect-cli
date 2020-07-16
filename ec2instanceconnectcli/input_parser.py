@@ -86,7 +86,12 @@ def _validate_custom_flags(flags):
     for flag in flags:
         flag = flag.strip()
         if flag == '-i':
-            raise AssertionError("Should not use '-i' switch as we will handle identity file")
+            raise AssertionError(
+                "'-i' is not supported when using mssh. When using the mssh command to connect to your instance, you "
+                "do not need to specify any kind of identity file, because EC2 Instance Connect manages the key pair. "
+                "Remove the -i flag from 'mssh <instance-id>' (or 'mssh <user>@<instance-id>' for an Ubuntu instance) "
+                "and try again."
+            )
 
 def _validate_instance_bundles(instance_bundles, mode):
     """
