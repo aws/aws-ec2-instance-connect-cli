@@ -43,7 +43,7 @@ class EC2InstanceConnectCommand(object):
         Generates and returns the generated command
         """
         # Start with protocol & identity file
-        command = "{0} -o 'IdentitiesOnly=yes' -i {1}".format(self.program, self.key_file)
+        command = '{0} -o "IdentitiesOnly=yes" -i {1}'.format(self.program, self.key_file)
 
         # Next add command flags if present
         if len(self.flags) > 0:
