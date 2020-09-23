@@ -17,7 +17,7 @@ A Command Line Environment for connecting to EC2 instances through AWS EC2 Insta
 """
 import os
 
-__version__ = '1.0.1'
+__version__ = '1.0.2'
 
 EnvironmentVariables = {
     'ca_bundle': ('ca_bundle', 'AWS_CA_BUNDLE', None, None),
