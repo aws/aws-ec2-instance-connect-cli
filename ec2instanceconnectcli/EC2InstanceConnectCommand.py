@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import shlex
 
 class EC2InstanceConnectCommand(object):
     """
@@ -54,7 +55,7 @@ class EC2InstanceConnectCommand(object):
 
         #program specific command
         if len(self.program_command) > 0:
-            command = "{0} {1}".format(command, self.program_command)
+            command = "{0} {1}".format(command, shlex.quote(self.program_command))
 
         if len(self.instance_bundles) > 1:
             command = "{0} {1}".format(command, self._get_target(self.instance_bundles[1]))
