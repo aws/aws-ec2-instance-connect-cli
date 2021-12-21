@@ -43,21 +43,20 @@ class EC2InstanceConnectCommand(object):
         Generates and returns the generated command
         """
         # Start with protocol & identity file
-        command = '{0} -o "IdentitiesOnly=yes" -i {1}'.format(self.program, self.key_file)
+        command = [self.program, '-o', 'IdentitiesOnly=yes', '-i', self.key_file]
 
         # Next add command flags if present
-        if len(self.flags) > 0:
-            command = "{0} {1}".format(command, self.flags)
+        command.extend(self.flags)
 
         # Target
-        command = "{0} {1}".format(command, self._get_target(self.instance_bundles[0]))
+        command.append(self._get_target(self.instance_bundles[0]))
 
         #program specific command
         if len(self.program_command) > 0:
-            command = "{0} {1}".format(command, self.program_command)
+            command.append(self.program_command)
 
         if len(self.instance_bundles) > 1:
-            command = "{0} {1}".format(command, self._get_target(self.instance_bundles[1]))
+            command.append(self._get_target(self.instance_bundles[1]))
 
         self.logger.debug('Generated command: {0}'.format(command))
 
