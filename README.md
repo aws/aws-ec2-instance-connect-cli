@@ -1,7 +1,7 @@
 # AWS EC2 Instance Connect CLI
 
 This is a Python client for accessing EC2 instances via AWS EC2 Instance Connect.
-This module supports Python 2.7.x and 3+.  [This package is available on PyPI for pip installation](https://pypi.org/project/ec2instanceconnectcli/), ie, `pip install ec2instanceconnectcli`
+This module supports Python 3.6.x+.  [This package is available on PyPI for pip installation](https://pypi.org/project/ec2instanceconnectcli/), ie, `pip install ec2instanceconnectcli`
 
 ## Setup
 
@@ -30,8 +30,6 @@ Run the desired script with standard UNIX pathing.  For example,
 Unit tests can be run with standard pytest.  They may be run, for example, by
 
 `python -m pytest`
-
-For Python2, ensure **mock** is installed: `pip2 install mock`.
 
 Also, for corrcting import when using virtualenv, you have to export PYTHONPATH by running: `export PYTHONPATH=$(pwd)`
 
