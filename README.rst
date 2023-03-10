@@ -10,11 +10,6 @@ This client supports all standard ssh operations with the `mssh` command and all
 
 The ec2-connect-cli package works on Python versions:
 
-* 2.6.x and greater
-* 2.7.x and greater
-* 3.3.x and greater
-* 3.4.x and greater
-* 3.5.x and greater
 * 3.6.x and greater
 
 ------------
