@@ -21,7 +21,7 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-requires = ['cryptography>=1.9',
+requires = ['cryptography>=39.0.1',
             'botocore>=1.12.179'
             ]
 
