@@ -1,5 +1,7 @@
 # AWS EC2 Instance Connect CLI
 
+**_[IMPORTANT]_  Since June 2023, the AWS CLI includes the [ssh](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/ec2-instance-connect/ssh.html) command. The AWS CLI ssh command allows you to connect to your instances directly over the internet or to instances in a private subnet using [EC2 Instance Connect](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Connect-using-EC2-Instance-Connect.html). We strongly recommend using the AWS CLI ssh command rather than this package.
+
 This is a Python client for accessing EC2 instances via AWS EC2 Instance Connect.
 This module supports Python 3.6.x+.  [This package is available on PyPI for pip installation](https://pypi.org/project/ec2instanceconnectcli/), ie, `pip install ec2instanceconnectcli`
 
@@ -31,7 +33,7 @@ Unit tests can be run with standard pytest.  They may be run, for example, by
 
 `python -m pytest`
 
-Also, for corrcting import when using virtualenv, you have to export PYTHONPATH by running: `export PYTHONPATH=$(pwd)`
+Also, for correcting import when using virtualenv, you have to export PYTHONPATH by running: `export PYTHONPATH=$(pwd)`
 
 ## Generating Documentation
 
