@@ -57,6 +57,7 @@ def main(program, mode):
     parser.add_argument('-u', '--profile', action='store', help='AWS Config Profile', type=str, default=DEFAULT_PROFILE, metavar='')
     parser.add_argument('-t', '--instance_id', action='store', help='EC2 Instance ID. Required if target is hostname', type=str, default=DEFAULT_INSTANCE, metavar='')
     parser.add_argument('-d', '--debug', action="store_true", help='Turn on debug logging')
+    parser.add_argument('-p', '--private', action="store_true", help='Force usage of private IP')
 
     args = parser.parse_known_args()
 
