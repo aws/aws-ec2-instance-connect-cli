@@ -41,7 +41,7 @@ class TestInputParser(TestBase):
 
         self.assertEqual(bundles, [{'username': self.default_user, 'instance_id': self.instance_id,
                                    'target': None, 'zone': None, 'region': None, 'profile': self.profile}])
-        self.assertEqual(flags, '')
+        self.assertEqual(flags, [])
         self.assertEqual(command, '')
 
     def test_username(self):
@@ -51,7 +51,7 @@ class TestInputParser(TestBase):
 
         self.assertEqual(bundles, [{'username': 'myuser', 'instance_id': self.instance_id,
                                     'target': None, 'zone': None, 'region': None, 'profile': self.profile}])
-        self.assertEqual(flags, '')
+        self.assertEqual(flags, [])
         self.assertEqual(command, '')
 
     def test_dns_name(self):
@@ -63,7 +63,7 @@ class TestInputParser(TestBase):
         self.assertEqual(bundles, [{'username': self.default_user, 'instance_id': self.instance_id,
                                     'target': self.dns_name, 'zone': self.availability_zone,
                                     'region': self.region, 'profile': self.profile}])
-        self.assertEqual(flags, '')
+        self.assertEqual(flags, [])
         self.assertEqual(command, '')
 
     def test_flags(self):
@@ -73,7 +73,7 @@ class TestInputParser(TestBase):
 
         self.assertEqual(bundles, [{'username': 'login', 'instance_id': self.instance_id,
                                     'target': None, 'zone': None, 'region': None, 'profile': self.profile}])
-        self.assertEqual(flags, '-1 -l login')
+        self.assertEqual(flags, ['-1', '-l', 'login'])
         self.assertEqual(command, '')
 
     def test_command(self):
@@ -83,7 +83,7 @@ class TestInputParser(TestBase):
 
         self.assertEqual(bundles, [{'username': self.default_user, 'instance_id': self.instance_id,
                                     'target': None, 'zone': None, 'region': None, 'profile': self.profile}])
-        self.assertEqual(flags, '')
+        self.assertEqual(flags, [])
         self.assertEqual(command, 'uname -a')
 
     def test_sftp(self):
@@ -95,7 +95,7 @@ class TestInputParser(TestBase):
         self.assertEqual(bundles, [{'username': self.default_user, 'instance_id': self.instance_id,
                                     'target': None, 'zone': None, 'region': None, 'profile': self.profile,
                                     'file': 'first_file'}])
-        self.assertEqual(flags, '')
+        self.assertEqual(flags, [])
         self.assertEqual(command, 'second_file')
 
     def test_invalid_username(self):

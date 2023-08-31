@@ -31,7 +31,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                   mock_push_key,
                   mock_run):
         mock_file = 'identity'
-        flag = '-f flag'
+        flags = ['-f', 'flag']
         command = 'command arg'
         logger = EC2InstanceConnectLogger()
         instance_bundles = [{'username': self.default_user, 'instance_id': self.instance_id,
@@ -41,12 +41,12 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.instance_info
         mock_push_key.return_value = None
 
-        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flags, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
-        
-        expected_command = 'ssh -o "IdentitiesOnly=yes" -i {0} {1} {2}@{3} {4}'.format(mock_file, flag, self.default_user,
-                                                               self.public_ip, command)
+
+        expected_command = ['ssh', '-o', 'IdentitiesOnly=yes', '-i', mock_file, *flags,
+                            '{}@{}'.format(self.default_user, self.public_ip), command]
 
         # Check that we successfully get to the run
         self.assertTrue(mock_instance_data.called)
@@ -62,7 +62,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                   mock_push_key,
                   mock_run):
         mock_file = "identity"
-        flag = '-f flag'
+        flags = ['-f', 'flag']
         command = 'command arg'
         logger = EC2InstanceConnectLogger()
         instance_bundles = [{'username': self.default_user, 'instance_id': self.instance_id,
@@ -72,12 +72,12 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.private_instance_info
         mock_push_key.return_value = None
 
-        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flags, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
 
-        expected_command = 'ssh -o "IdentitiesOnly=yes" -i {0} {1} {2}@{3} {4}'.format(mock_file, flag, self.default_user,
-                                                               self.private_ip, command)
+        expected_command = ['ssh', '-o', 'IdentitiesOnly=yes', '-i', mock_file, *flags,
+                            '{}@{}'.format(self.default_user, self.private_ip), command]
 
         # Check that we successfully get to the run
         self.assertTrue(mock_instance_data.called)
@@ -92,7 +92,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                   mock_push_key,
                   mock_run):
         mock_file = 'identity'
-        flag = '-f flag'
+        flags = ['-f', 'flag']
         command = 'command arg'
         host = '0.0.0.0'
         logger = EC2InstanceConnectLogger()
@@ -103,12 +103,12 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.instance_info
         mock_push_key.return_value = None
 
-        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("ssh", instance_bundles, mock_file, flags, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
 
-        expected_command = 'ssh -o "IdentitiesOnly=yes" -i {0} {1} {2}@{3} {4}'.format(mock_file, flag, self.default_user,
-                                                               host, command)
+        expected_command = ['ssh', '-o', 'IdentitiesOnly=yes', '-i', mock_file, *flags,
+                            '{}@{}'.format(self.default_user, host), command]
         # Check that we successfully get to the run
         # Since both target and availability_zone are provided, mock_instance_data should not be called
         self.assertFalse(mock_instance_data.called)
@@ -123,7 +123,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                   mock_push_key,
                   mock_run):
         mock_file = 'identity'
-        flag = '-f flag'
+        flags = ['-f', 'flag']
         command = 'file2 file3'
         logger = EC2InstanceConnectLogger()
         instance_bundles = [{'username': self.default_user, 'instance_id': self.instance_id,
@@ -133,10 +133,11 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.instance_info
         mock_push_key.return_value = None
 
-        expected_command = 'sftp -o "IdentitiesOnly=yes" -i {0} {1} {2}@{3}:{4} {5}'.format(mock_file, flag, self.default_user,
-                                                               self.public_ip, 'file1', command)
+        expected_command = ['sftp', '-o', 'IdentitiesOnly=yes', '-i', mock_file, *flags,
+                            '{}@{}:{}'.format(self.default_user, self.public_ip, 'file1'),
+                            command]
 
-        cli_command = EC2InstanceConnectCommand("sftp", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("sftp", instance_bundles, mock_file, flags, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
 
@@ -153,7 +154,7 @@ class TestEC2InstanceConnectCLI(TestBase):
                    mock_push_key,
                    mock_run):
         mock_file = 'identity'
-        flag = '-f flag'
+        flags = ['-f', 'flag']
         command = 'file2 file3'
         logger = EC2InstanceConnectLogger()
         instance_bundles = [{'username': self.default_user, 'instance_id': self.instance_id,
@@ -166,12 +167,12 @@ class TestEC2InstanceConnectCLI(TestBase):
         mock_instance_data.return_value = self.instance_info
         mock_push_key.return_value = None
 
-        expected_command = 'scp -o "IdentitiesOnly=yes" -i {0} {1} {2}@{3}:{4} {5} {6}@{7}:{8}'.format(mock_file, flag, self.default_user,
-                                                                                self.public_ip, 'file1', command,
-                                                                                self.default_user,
-                                                                                self.public_ip, 'file4')
+        expected_command = ['scp', '-o', 'IdentitiesOnly=yes', '-i', mock_file, *flags,
+                            '{}@{}:{}'.format(self.default_user, self.public_ip, 'file1'),
+                            command,
+                            '{}@{}:{}'.format(self.default_user, self.public_ip, 'file4')]
 
-        cli_command = EC2InstanceConnectCommand("scp", instance_bundles, mock_file, flag, command, logger.get_logger())
+        cli_command = EC2InstanceConnectCommand("scp", instance_bundles, mock_file, flags, command, logger.get_logger())
         cli = EC2InstanceConnectCLI(instance_bundles, "", cli_command, logger.get_logger())
         cli.invoke_command()
 
@@ -183,5 +184,5 @@ class TestEC2InstanceConnectCLI(TestBase):
     def test_status_code(self):
         #TODO: Refine test for checking run_command status code
         cli = EC2InstanceConnectCLI(None, None, None, None)
-        code = cli.run_command("echo ok; exit -1;")
+        code = cli.run_command(["sh", "-c", "echo ok; exit -1;"])
         self.assertEqual(code, 255)

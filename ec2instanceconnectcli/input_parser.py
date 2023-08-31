@@ -117,7 +117,7 @@ def _parse_command_flags(raw_command, instance_bundles, is_ssh=False):
     :return: tuple of flags and final comamnd or file list
     :rtype: tuple
     """
-    flags = ''
+    flags = []
     is_user = False
     is_flagged = False
     command_index = 0
@@ -133,7 +133,7 @@ def _parse_command_flags(raw_command, instance_bundles, is_ssh=False):
         used += 1
 
         # This is either a flag or a flag value
-        flags = '{0} {1}'.format(flags, raw_command[command_index])
+        flags.append(raw_command[command_index])
 
         if raw_command[command_index][0] == '-':
             # Flag
@@ -151,8 +151,6 @@ def _parse_command_flags(raw_command, instance_bundles, is_ssh=False):
                 is_user = False
 
         command_index += 1
-
-    flags = flags.strip()
 
     """
     Target host and command or file list

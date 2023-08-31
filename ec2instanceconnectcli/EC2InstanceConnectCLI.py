@@ -81,18 +81,18 @@ class EC2InstanceConnectCLI(object):
             key_publisher.push_public_key(session, bundle['instance_id'], bundle['username'], self.pub_key, bundle['zone'])
             self.logger.debug('Successfully pushed the public key to {0}'.format(bundle['instance_id']))
 
-    def run_command(self, command=None):
+    def run_command(self, args=None):
         """
-        Runs the given command in a sub-shell
-        :param command: Command to invoke
-        :type command: basestring
+        Runs the given command
+        :param args: Arguments to invoke
+        :type args: list of strings
         :return: Return code for remote command
         :rtype: int
         """
-        if not command:
+        if not args:
             raise ValueError('Must provide a command')
 
-        invocation_proc = Popen(command, shell=True)
+        invocation_proc = Popen(args)
         while invocation_proc.poll() is None: #sub-process not terminated
             time.sleep(0.1)
         return invocation_proc.returncode
